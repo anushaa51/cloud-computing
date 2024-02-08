@@ -18,8 +18,12 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-yum install git
+sudo yum install git
 git clone https://github.com/anushaa51/cloud-computing.git
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+. ~/.nvm/nvm.sh
+nvm install --lts
 cd cloud-computing/
 git pull
+npm ci
 node app.js
