@@ -18,7 +18,7 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-sudo yum install git
+sudo yum -y install git
 git clone https://github.com/anushaa51/cloud-computing.git
 export HOME=/home/ec2-user
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
