@@ -2,25 +2,38 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const csv = require('csv-parser')
-const fs = require('fs')
+const clientS3 = require('@aws-sdk/client-s3');
+const clientSQS = require('@aws-sdk/client-sqs');
+
+const s3Client = new clientS3.S3Client({ region: 'us-east-1' });
+const sqsClient = new clientSQS.SQSClient({ region: 'us-east-1' });
 
 const fileUpload = require('express-fileupload');
 app.use(fileUpload());
-
-const model = {};
-
-fs.createReadStream('model_res.csv')
-  .pipe(csv())
-  .on('data', (data) => model[data.Image] = data.Results);
 
 app.get('/', (req, res) => {
     res.send('Web-tier server is running!')
 })
 
-app.post('/', (req, res) => {
-    const fname = req.files['inputFile'].name.split('.').slice(0, -1).join('.');
-    res.send(`${fname}:${model[fname]}`)
+app.post('/', async (req, res) => {
+    const fname = req.files['inputFile'].name;
+    const iname = fname.split('.').slice(0, -1).join('.');
+    await s3Client.send(
+        new clientS3.PutObjectCommand({
+            Bucket: '1229511168-in-bucket',
+            Key: fname,
+            Body: req.files['inputFile'].data,
+        })
+    );
+    await sqsClient.send(
+        new clientSQS.SendMessageCommand({
+            QueueUrl: 'https://sqs.us-east-1.amazonaws.com/471112779141/1229511168-req-queue',
+            MessageBody: fname,
+        })
+    );
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    res.send('Yay!')
 })
 
 app.listen(port, () => {
