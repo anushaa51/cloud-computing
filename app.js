@@ -31,8 +31,8 @@ app.post('/', async (req, res) => {
             MessageBody: fname,
         })
     );
-    await new Promise(resolve => setTimeout(resolve, 60000));
-    while (true) {
+    await new Promise(resolve => setTimeout(resolve, 45000));
+    for(let i = 0; i < 600; i++) {
         await new Promise(resolve => setTimeout(resolve, 500));
         const resp = await sqsClient.send(
             new clientSQS.ReceiveMessageCommand({
@@ -45,7 +45,8 @@ app.post('/', async (req, res) => {
         if (!resp.Messages) {
             continue;
         }
-        for (const message in resp.Messages) {
+        for (let j = resp.Messages.length - 1; j >= 0; --j) {
+            let message = resp.Messages[j]
             if (message.Body.startsWith(iname)) {
                 await sqsClient.send(
                     new clientSQS.DeleteMessageCommand.MessageCommand({

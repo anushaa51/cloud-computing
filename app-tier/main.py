@@ -18,11 +18,11 @@ while True:
         prev_no_messages = False
         time.sleep(5)
     time.sleep(1)
-    messages = req_queue.receive_messages(MaxNumberOfMessages=3, VisibilityTimeout=5, WaitTimeSeconds=5)
+    messages = req_queue.receive_messages(MaxNumberOfMessages=3, VisibilityTimeout=15, WaitTimeSeconds=5)
     if not messages:
         prev_no_messages = True
         continue
-    for message in messages:
+    for message in reversed(messages):
         image_key = message.body
         image = image_key.split('.')[0]
         in_bucket.download_file(image_key, image_key)
