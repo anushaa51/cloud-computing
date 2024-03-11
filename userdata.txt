@@ -24,7 +24,11 @@ export HOME=/home/ec2-user
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 . ~/.nvm/nvm.sh
 nvm install --lts
+curl -O https://bootstrap.pypa.io/get-pip.py
+sudo python3 get-pip.py
+sudo python3 -m pip install boto3
 cd cloud-computing/
 git pull
 npm ci
-node app.js
+bash -c "exec -a web_tier node app.js &"
+bash -c "exec -a autoscale sudo python3 controller.py &"

@@ -17,7 +17,8 @@ while True:
     if prev_no_messages:
         prev_no_messages = False
         time.sleep(5)
-    messages = req_queue.receive_messages(MaxNumberOfMessages=5, VisibilityTimeout=10, WaitTimeSeconds=5)
+    time.sleep(1)
+    messages = req_queue.receive_messages(MaxNumberOfMessages=3, VisibilityTimeout=5, WaitTimeSeconds=5)
     if not messages:
         prev_no_messages = True
         continue

@@ -31,9 +31,32 @@ app.post('/', async (req, res) => {
             MessageBody: fname,
         })
     );
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    res.send('Yay!')
+    await new Promise(resolve => setTimeout(resolve, 60000));
+    while (true) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const resp = await sqsClient.send(
+            new clientSQS.ReceiveMessageCommand({
+                QueueUrl: 'https://sqs.us-east-1.amazonaws.com/471112779141/1229511168-resp-queue',
+                MaxNumberOfMessages: 10,
+                VisibilityTimeout: 0,
+                WaitTimeSeconds: 5,
+            })
+        );
+        if (!resp.Messages) {
+            continue;
+        }
+        for (const message in resp.Messages) {
+            if (message.Body.startsWith(iname)) {
+                await sqsClient.send(
+                    new clientSQS.DeleteMessageCommand.MessageCommand({
+                        QueueUrl: 'https://sqs.us-east-1.amazonaws.com/471112779141/1229511168-resp-queue',
+                        ReceiptHandle: message.ReceiptHandle,
+                    })
+                );
+                res.send(message.Body);
+            }
+        }
+    }
 })
 
 app.listen(port, () => {

@@ -6,7 +6,7 @@ autoscaling = boto3.client('autoscaling', region_name='us-east-1')
 
 max_seen_messages = 0
 attempt = 0
-max_attempts = 8
+max_attempts = 10
 
 while True:
     time.sleep(8)
