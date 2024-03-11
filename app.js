@@ -49,12 +49,13 @@ app.post('/', async (req, res) => {
             let message = resp.Messages[j]
             if (message.Body.startsWith(iname)) {
                 await sqsClient.send(
-                    new clientSQS.DeleteMessageCommand.MessageCommand({
+                    new clientSQS.DeleteMessageCommand({
                         QueueUrl: 'https://sqs.us-east-1.amazonaws.com/471112779141/1229511168-resp-queue',
                         ReceiptHandle: message.ReceiptHandle,
                     })
                 );
                 res.send(message.Body);
+                return;
             }
         }
     }
