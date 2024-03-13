@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 8000
 
 const clientS3 = require('@aws-sdk/client-s3');
 const clientSQS = require('@aws-sdk/client-sqs');

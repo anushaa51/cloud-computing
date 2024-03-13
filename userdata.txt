@@ -31,4 +31,4 @@ cd cloud-computing/
 git pull
 npm ci
 bash -c "exec -a web_tier node app.js &"
-bash -c "exec -a autoscale sudo python3 autoscale.py &"
+bash -c "exec -a autoscale sudo python3 controller.py &"
